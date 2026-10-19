@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Pulse</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="dashboard" aria-labelledby="dashboard-heading">
+    <header class="dashboard-header">
+      <div class="dashboard-title-group">
+        <h1 id="dashboard-heading">Project Pulse</h1>
+        <p class="dashboard-subtitle">Mona's team contributor overview: active initiatives, owners, status, recentActivity, and priority.</p>
+      </div>
+      <div aria-live="polite" id="data-source-indicator" class="project-owner">Source: project-data.json</div>
+    </header>
+
+    <section class="summary-strip" aria-label="Portfolio summary">
+      <div class="summary-pill">
+        <div class="summary-pill-label">Active Projects</div>
+        <div class="summary-pill-value" id="metric-total">4</div>
+      </div>
+      <div class="summary-pill">
+        <div class="summary-pill-label">On Track</div>
+        <div class="summary-pill-value" id="metric-on-track">2</div>
+      </div>
+      <div class="summary-pill">
+        <div class="summary-pill-label">High / Critical Priority</div>
+        <div class="summary-pill-value" id="metric-high-priority">3</div>
+      </div>
+    </section>
+
+    <section class="projects-grid" id="projects-container" aria-label="Active projects">
+      <article class="project-card">
+        <div class="project-card-header">
+          <div>
+            <h2 class="project-name">OctoFlow CI Pipeline</h2>
+            <p class="project-owner">Owner: Mona Octocat</p>
+          </div>
+          <span class="status-badge status-on-track" data-field="status">On Track</span>
+        </div>
+        <p class="project-summary">Standardized workflow templates and build caching across repository pipelines.</p>
+        <div class="project-meta">
+          <div class="meta-row">
+            <span class="meta-label">Priority (`priority`):</span>
+            <span class="priority-tag priority-high" data-field="priority">High</span>
+          </div>
+          <div>
+            <div class="meta-label">Recent Activity (`recentActivity`):</div>
+            <div data-field="recentActivity">Merged matrix runner caching and reduced build latency by 38%.</div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    function statusClass(status) {
+      const normalized = String(status || "").toLowerCase();
+      if (normalized.includes("risk")) return "status-at-risk";
+      if (normalized.includes("review")) return "status-in-review";
+      return "status-on-track";
+    }
+
+    function priorityClass(priority) {
+      const normalized = String(priority || "").toLowerCase();
+      if (normalized.includes("critical")) return "priority-critical";
+      if (normalized.includes("high")) return "priority-high";
+      return "priority-medium";
+    }
+
+    function renderProjects(projects) {
+      const container = document.getElementById("projects-container");
+      if (!container || !Array.isArray(projects) || projects.length === 0) return;
+
+      document.getElementById("metric-total").textContent = String(projects.length);
+      document.getElementById("metric-on-track").textContent = String(
+        projects.filter((p) => String(p.status).toLowerCase() === "on track").length
+      );
+      document.getElementById("metric-high-priority").textContent = String(
+        projects.filter((p) => ["high", "critical"].includes(String(p.priority).toLowerCase())).length
+      );
+
+      container.innerHTML = projects
+        .map(
+          (project) => `
+        <article class="project-card">
+          <div class="project-card-header">
+            <div>
+              <h2 class="project-name">${project.name}</h2>
+              <p class="project-owner">Owner: ${project.owner}</p>
+            </div>
+            <span class="status-badge ${statusClass(project.status)}" data-field="status">${project.status}</span>
+          </div>
+          <p class="project-summary">${project.summary || ""}</p>
+          <div class="project-meta">
+            <div class="meta-row">
+              <span class="meta-label">Priority:</span>
+              <span class="priority-tag ${priorityClass(project.priority)}" data-field="priority">${project.priority}</span>
+            </div>
+            <div>
+              <div class="meta-label">Recent Activity:</div>
+              <div data-field="recentActivity">${project.recentActivity}</div>
+            </div>
+          </div>
+        </article>
+      `
+        )
+        .join("");
+    }
+
+    fetch("project-data.json")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load project-data.json");
+        return response.json();
+      })
+      .then((data) => {
+        if (data && Array.isArray(data.projects)) {
+          renderProjects(data.projects);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  </script>
+</body>
+</html>

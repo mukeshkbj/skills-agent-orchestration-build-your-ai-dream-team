@@ -1,0 +1,36 @@
+{
+  "projects": [
+    {
+      "name": "OctoFlow CI Pipeline",
+      "owner": "Mona Octocat",
+      "status": "On Track",
+      "recentActivity": "Merged matrix runner caching and reduced build latency by 38%.",
+      "priority": "High",
+      "summary": "Standardized workflow templates and build caching across repository pipelines."
+    },
+    {
+      "name": "Copilot Agent Playbooks",
+      "owner": "Devon Rivera",
+      "status": "In Review",
+      "recentActivity": "Added Orchestrator and Planner handoff verification checks.",
+      "priority": "High",
+      "summary": "Reusable specialist prompts and role boundaries for multi-agent CLI workflows."
+    },
+    {
+      "name": "Docs Portal Accessibility Audit",
+      "owner": "Samira Patel",
+      "status": "On Track",
+      "recentActivity": "Updated status badge contrast ratios and keyboard focus rings across cards.",
+      "priority": "Medium",
+      "summary": "WCAG AA typography, semantic landmarks, and focus indicators for contributor docs."
+    },
+    {
+      "name": "Release Telemetry Collector",
+      "owner": "Liam Chen",
+      "status": "At Risk",
+      "recentActivity": "Investigating webhook retry queue delays during peak deployment windows.",
+      "priority": "Critical",
+      "summary": "Real-time deployment health metrics and release rollback alerting."
+    }
+  ]
+}
